@@ -54,7 +54,6 @@ LOCAL_CFLAGS += -DRECOVERY_API_VERSION=$(RECOVERY_API_VERSION)
 #    libmincrypt \
 #    libminadbd \
 #    libminui \
-#    libpixelflinger_static \
 #    libpng \
 #    libfs_mgr \
 #    libcutils \
