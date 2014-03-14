@@ -85,7 +85,7 @@ int verify_file(const char* path) {
 
     size_t comment_size = footer[4] + (footer[5] << 8);
     size_t signature_start = footer[0] + (footer[1] << 8);
-    LOGI("comment is %d bytes; signature %d bytes from end\n",
+    LOGI("comment is %zu bytes; signature %zu bytes from end\n",
          comment_size, signature_start);
 
     if (signature_start - FOOTER_SIZE < RSANUMBYTES) {
@@ -208,11 +208,11 @@ int verify_file(const char* path) {
         // the signing tool appends after the signature itself.
         if (RSA_verify(pKeys[i].public_key, eocd + eocd_size - 6 - RSANUMBYTES,
                        RSANUMBYTES, hash, pKeys[i].hash_len)) {
-            LOGI("whole-file signature verified against key %d\n", i);
+            LOGI("whole-file signature verified against RSA key %zu\n", i);
             free(eocd);
             return VERIFY_SUCCESS;
         } else {
-            LOGI("failed to verify against key %d\n", i);
+            LOGI("failed to verify against key %zu\n", i);
         }
 		LOGI("i: %i, eocd_size: %i, RSANUMBYTES: %i\n", i, eocd_size, RSANUMBYTES);
     }
