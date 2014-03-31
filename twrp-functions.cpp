@@ -29,6 +29,7 @@
 #include <sys/reboot.h>
 #include <sys/sendfile.h>
 #include <sys/stat.h>
+#include <sys/syscall.h>
 #include <sys/vfs.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -363,10 +364,10 @@ int TWFunc::tw_reboot(RebootCommand command)
 			return reboot(RB_AUTOBOOT);
 		case rb_recovery:
 			check_and_run_script("/sbin/rebootrecovery.sh", "reboot recovery");
-			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "recovery");
+			return syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "recovery");
 		case rb_bootloader:
 			check_and_run_script("/sbin/rebootbootloader.sh", "reboot bootloader");
-			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "bootloader");
+			return syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "bootloader");
 		case rb_poweroff:
 			check_and_run_script("/sbin/poweroff.sh", "power off");
 #ifdef ANDROID_RB_POWEROFF
@@ -375,7 +376,7 @@ int TWFunc::tw_reboot(RebootCommand command)
 			return reboot(RB_POWER_OFF);
 		case rb_download:
 			check_and_run_script("/sbin/rebootdownload.sh", "reboot download");
-			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "download");
+			return syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "download");
 		default:
 			return -1;
 	}
