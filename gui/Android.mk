@@ -65,22 +65,6 @@ ifeq ($(TW_OEM_BUILD),true)
 endif
 
 ifeq ($(DEVICE_RESOLUTION),)
-$(warning ********************************************************************************)
-$(warning * DEVICE_RESOLUTION is NOT SET in BoardConfig.mk )
-$(warning * Please see http://tinyw.in/nP7d for details    )
-$(warning ********************************************************************************)
-$(error stopping)
-endif
-
-ifeq "$(wildcard bootable/recovery/gui/devices/$(DEVICE_RESOLUTION))" ""
-$(warning ********************************************************************************)
-$(warning * DEVICE_RESOLUTION ($(DEVICE_RESOLUTION)) does NOT EXIST in bootable/recovery/gui/devices )
-$(warning * Please choose an existing theme or create a new one for your device )
-$(warning ********************************************************************************)
-$(error stopping)
-endif
-
-ifeq ($(DEVICE_RESOLUTION),)
 ifneq ($(TARGET_SCREEN_WIDTH) $(TARGET_SCREEN_HEIGHT),$(space))
 
 resolutions := $(shell ls bootable/recovery/gui/devices)
@@ -106,6 +90,23 @@ $(warning **********************************************************************
 $(error stop)
 endif
 endif
+
+ifeq ($(DEVICE_RESOLUTION),)
+$(warning ********************************************************************************)
+$(warning * DEVICE_RESOLUTION is NOT SET in BoardConfig.mk )
+$(warning * Please see http://tinyw.in/nP7d for details    )
+$(warning ********************************************************************************)
+$(error stopping)
+endif
+
+ifeq "$(wildcard bootable/recovery/gui/devices/$(DEVICE_RESOLUTION))" ""
+$(warning ********************************************************************************)
+$(warning * DEVICE_RESOLUTION ($(DEVICE_RESOLUTION)) does NOT EXIST in bootable/recovery/gui/devices )
+$(warning * Please choose an existing theme or create a new one for your device )
+$(warning ********************************************************************************)
+$(error stopping)
+endif
+
 LOCAL_C_INCLUDES += bionic external/stlport/stlport $(commands_recovery_local_path)/gui/devices/$(DEVICE_RESOLUTION)
 
 include $(BUILD_STATIC_LIBRARY)
