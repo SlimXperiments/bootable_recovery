@@ -111,12 +111,12 @@ static void text_blend(unsigned char* src_p, int src_row_bytes,
 }
 
 
-int gr_text(int x, int y, const char *s, ...)
+void gr_text(int x, int y, const char *s, ...)
 {
     return gr_text_impl(x, y, s, 0);
 }
 
-int gr_text_impl(int x, int y, const char *s, int bold)
+void gr_text_impl(int x, int y, const char *s, int bold)
 {
     GRFont *font = gr_font;
     unsigned off;
