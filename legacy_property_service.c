@@ -29,7 +29,10 @@
 
 #include "legacy_properties.h"
 
+#include <linux/futex.h>
+
 #include <sys/mman.h>
+#include <sys/syscall.h>
 #include "legacy_property_service.h"
 
 static int persistent_properties_loaded = 0;
@@ -122,7 +125,7 @@ static void update_prop_info(prop_info *pi, const char *value, unsigned len)
     pi->serial = pi->serial | 1;
     memcpy(pi->value, value, len + 1);
     pi->serial = (len << 24) | ((pi->serial + 1) & 0xffffff);
-    __futex_wake(&pi->serial, INT32_MAX);
+    syscall(__NR_futex, &pi->serial, FUTEX_WAKE, INT32_MAX);
 }
 
 static const prop_info *__legacy_property_find(const char *name)
@@ -168,7 +171,7 @@ static int legacy_property_set(const char *name, const char *value)
         pa = __legacy_property_area__;
         update_prop_info(pi, value, valuelen);
         pa->serial++;
-        __futex_wake(&pa->serial, INT32_MAX);
+        syscall(__NR_futex, &pa->serial, FUTEX_WAKE, INT32_MAX);
     } else {
         pa = __legacy_property_area__;
         if(pa->count == PA_COUNT_MAX) return -1;
@@ -183,7 +186,7 @@ static int legacy_property_set(const char *name, const char *value)
 
         pa->count++;
         pa->serial++;
-        __futex_wake(&pa->serial, INT32_MAX);
+        syscall(__NR_futex, &pa->serial, FUTEX_WAKE, INT32_MAX);
     }
 
     return 0;
